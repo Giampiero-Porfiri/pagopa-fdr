@@ -44,7 +44,11 @@ public enum AppErrorCodeMessageEnum implements AppErrorCodeMessageInterface {
   REPORTING_FLOW_NAME_DATE_WRONG_FORMAT(
       "0718", "reporting-flow.name-date.wrongFormat", RestResponse.Status.BAD_REQUEST),
   REPORTING_FLOW_NAME_PSP_WRONG_FORMAT(
-      "0719", "reporting-flow.name-psp.wrongFormat", RestResponse.Status.BAD_REQUEST);
+      "0719", "reporting-flow.name-psp.wrongFormat", RestResponse.Status.BAD_REQUEST),
+
+  GIAMPIERO_ERRORE (
+          "8901", "giampiero.errore", RestResponse.Status.CONFLICT);
+
   private final String errorCode;
   private final String errorMessageKey;
   private final RestResponse.Status httpStatus;
