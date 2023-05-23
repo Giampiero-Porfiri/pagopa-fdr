@@ -3,7 +3,6 @@ package it.gov.pagopa.fdr.rest.giampiero;
 import it.gov.pagopa.fdr.exception.AppErrorCodeMessageEnum;
 import it.gov.pagopa.fdr.exception.AppException;
 import it.gov.pagopa.fdr.rest.giampiero.request.User;
-import it.gov.pagopa.fdr.rest.giampiero.response.UserResponse;
 import it.gov.pagopa.fdr.rest.model.GenericResponse;
 import it.gov.pagopa.fdr.service.giampiero.GiampieroService;
 import jakarta.inject.Inject;
@@ -47,13 +46,13 @@ public class GiampieroResource {
                             content =
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON,
-                                    schema = @Schema(implementation = UserResponse.class)
+                                    schema = @Schema(implementation = GenericResponse.class)
                             )
                     )
             }
     )
     @POST
-    public RestResponse<UserResponse> createUser(@Valid User utente) {
+    public RestResponse<GenericResponse> createUser(@Valid User utente) {
         log.info("----------\n Sto creando utente:" + utente.getNome() + "\n ----------\n");
 
         // Non puoi essere Giampiero!
@@ -70,7 +69,7 @@ public class GiampieroResource {
         log.info("----------\n Salvando model\n ----------\n");
         service.save(user);
         return RestResponse.status(RestResponse.Status.CREATED,
-                                    UserResponse.builder().messaggio("Benvenuto " + utente.getNome() + "!").build());
+                GenericResponse.builder().message("Benvenuto " + utente.getNome() + "!").build());
     }
 
     @Operation(
@@ -96,12 +95,12 @@ public class GiampieroResource {
     )
     @DELETE
     @Path("/{name}")
-    public RestResponse<UserResponse> deleteUserByNome(@PathParam("name") String nome) {
+    public RestResponse<GenericResponse> deleteUserByNome(@PathParam("name") String nome) {
         log.info("----------\n Cancellando: " + nome + "----------\n");
 
         service.delete(nome);
         return RestResponse.status(RestResponse.Status.NO_CONTENT,
-                                    UserResponse.builder().messaggio("Ho cancellato " + nome).build());
+                GenericResponse.builder().message("Ho cancellato " + nome).build());
     }
 
     @Operation(
@@ -127,7 +126,7 @@ public class GiampieroResource {
     )
     @PUT
     @Path("/{name}")
-    public RestResponse<UserResponse> updateUser(@PathParam("name") String nome, User utente) {
+    public RestResponse<GenericResponse> updateUser(@PathParam("name") String nome, User utente) {
         log.info("----------\n Modificando: " + nome + "\n----------\n");
 
         // Converto in user di repository da user di request
@@ -140,6 +139,6 @@ public class GiampieroResource {
         log.info("----------\n Aggiornando model\n ----------\n");
         service.update(user, nome);
         return RestResponse.status(RestResponse.Status.OK,
-                                    UserResponse.builder().messaggio("Ho modificato " + utente.getNome()).build());
+                GenericResponse.builder().message("Ho modificato " + utente.getNome()).build());
     }
 }
