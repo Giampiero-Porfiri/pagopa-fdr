@@ -4,7 +4,9 @@ import it.gov.pagopa.fdr.exception.AppErrorCodeMessageEnum;
 import it.gov.pagopa.fdr.exception.AppException;
 import it.gov.pagopa.fdr.rest.giampiero.request.User;
 import it.gov.pagopa.fdr.rest.model.GenericResponse;
+import it.gov.pagopa.fdr.service.dto.giampieroDto.UserDto;
 import it.gov.pagopa.fdr.service.giampiero.GiampieroService;
+import it.gov.pagopa.fdr.service.psps.mapper.giampieroMapper.UserMapper;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +31,9 @@ public class GiampieroResource {
 
     @Inject
     GiampieroService service;
+
+    @Inject
+    UserMapper mapper;
 
     @Operation(
             summary = "Creates a new user",
@@ -61,13 +66,8 @@ public class GiampieroResource {
             throw new AppException(AppErrorCodeMessageEnum.GIAMPIERO_ERRORE);
         }
 
-        log.info("----------\n Convertendo model\n ----------\n");
-        it.gov.pagopa.fdr.repository.giampiero.User user = new it.gov.pagopa.fdr.repository.giampiero.User();
-        user.nome = utente.getNome();
-        user.cognome = utente.getCognome();
-        user.eta = utente.getEta();
         log.info("----------\n Salvando model\n ----------\n");
-        service.save(user);
+        service.save(mapper.toUserDto(utente));
         return RestResponse.status(RestResponse.Status.CREATED,
                 GenericResponse.builder().message("Benvenuto " + utente.getNome() + "!").build());
     }
@@ -126,18 +126,14 @@ public class GiampieroResource {
     )
     @PUT
     @Path("/{name}")
-    public RestResponse<GenericResponse> updateUser(@PathParam("name") String nome, User utente) {
-        log.info("----------\n Modificando: " + nome + "\n----------\n");
+    public RestResponse<GenericResponse> updateUser(
+            @PathParam("name") String nome,
+            @Valid @NotNull User utente) {
 
-        // Converto in user di repository da user di request
-        log.info("----------\n Convertendo model\n ----------\n");
-        it.gov.pagopa.fdr.repository.giampiero.User user = new it.gov.pagopa.fdr.repository.giampiero.User();
-        user.nome = utente.getNome();
-        user.cognome = utente.getCognome();
-        user.eta = utente.getEta();
+        log.info("Add User [%s]");
 
         log.info("----------\n Aggiornando model\n ----------\n");
-        service.update(user, nome);
+        service.update(mapper.toUserDto(utente),nome);
         return RestResponse.status(RestResponse.Status.OK,
                 GenericResponse.builder().message("Ho modificato " + utente.getNome()).build());
     }
