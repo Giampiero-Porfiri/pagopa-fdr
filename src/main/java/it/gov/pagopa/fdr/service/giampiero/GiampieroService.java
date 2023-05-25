@@ -37,14 +37,14 @@ public class GiampieroService {
             throw new AppException(AppErrorCodeMessageEnum.BAD_REQUEST);
         }
         User oldUser = userOpt.get();
-
+        mapper.updateUser(utente,oldUser);
         /* oldUser.nome = user.nome;
         oldUser.cognome = user.cognome;
-        oldUser.nascita = user.nascita; */
+        oldUser.nascita = user.nascita;
         oldUser.setNome(utente.getNome());
         oldUser.setCognome(utente.getCognome());
         oldUser.setNascita(utente.getNascita());
-        oldUser.setEta(ChronoUnit.YEARS.between(utente.getNascita(),LocalDate.now()));
+        oldUser.setEta(ChronoUnit.YEARS.between(utente.getNascita(),LocalDate.now()));*/
         oldUser.update();
     }
 
